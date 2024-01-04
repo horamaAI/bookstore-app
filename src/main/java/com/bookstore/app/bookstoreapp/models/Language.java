@@ -9,14 +9,23 @@ import jakarta.persistence.*;
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long language_id;
 
     private String language_code;
+
     private String language_name;
 
     // @ManyToOne
     // @JoinColumn(name = "book_id")
     // private Book book;
+
+    public Language() {}
+
+    public Language(String language_code, String language_name) {
+        this.language_code = language_code;
+        this.language_name = language_name;
+    }
 
     public Long getLanguage_id() {
         return language_id;
@@ -40,5 +49,12 @@ public class Language {
 
     public void setLanguage_name(String language_name) {
         this.language_name = language_name;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append(getLanguage_id())
+                .append(", ").append(getLanguage_code())
+                .append(", ").append(getLanguage_name()).toString();
     }
 }

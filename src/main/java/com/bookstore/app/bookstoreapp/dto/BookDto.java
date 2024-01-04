@@ -1,31 +1,38 @@
-package com.bookstore.app.bookstoreapp.models;
+package com.bookstore.app.bookstoreapp.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.bookstore.app.bookstoreapp.models.Language;
+import com.bookstore.app.bookstoreapp.models.Publisher;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
 import java.util.Date;
-import java.util.List;
 
-@Entity(name = "book")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-// @Getter @Setter @NoArgsConstructor
-public class Book {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+public class BookDto {
     private Long book_id;
 
     private String title;
 
     private String isbn13;
 
+
     private Long num_pages;
 
-    public Book() {}
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateDeserializers.DateDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date publication_date;
 
-    public Book(String title, String isbn13, Long num_pages, Date publication_date, Publisher publisher, Language language) {
+    private Publisher publisher;
+
+    private Language language;
+
+    public BookDto() {}
+
+    public BookDto(Long id, String title, String isbn13, Long num_pages, Date publication_date, Publisher publisher, Language language) {
+        this.book_id = id;
         this.title = title;
         this.isbn13 = isbn13;
         this.num_pages = num_pages;
@@ -33,17 +40,6 @@ public class Book {
         this.publisher = publisher;
         this.language = language;
     }
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date publication_date;
-
-    @OneToOne
-    @JoinColumn(name = "publisher_id")
-    private Publisher publisher;
-
-    @OneToOne
-    @JoinColumn(name = "language_id")
-    private Language language;
 
     public Long getBook_id() {
         return book_id;
@@ -67,14 +63,6 @@ public class Book {
 
     public void setIsbn13(String isbn13) {
         this.isbn13 = isbn13;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
     }
 
     public Long getNum_pages() {
@@ -101,12 +89,11 @@ public class Book {
         this.publisher = publisher;
     }
 
-    @Override
-    public String toString() {
-        return new StringBuilder().append(getBook_id())
-                .append(", ").append(getTitle())
-                .append(", ").append(getIsbn13())
-                .append(", ").append(getNum_pages()).toString();
+    public Language getLanguage() {
+        return language;
     }
 
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
 }
