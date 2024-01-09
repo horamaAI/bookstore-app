@@ -17,6 +17,7 @@ public class BookDto {
 
     private String isbn13;
 
+    private String description;
 
     private Long num_pages;
 
@@ -31,10 +32,11 @@ public class BookDto {
 
     public BookDto() {}
 
-    public BookDto(Long id, String title, String isbn13, Long num_pages, Date publication_date, Publisher publisher, Language language) {
+    public BookDto(Long id, String title, String isbn13, String description, Long num_pages, Date publication_date, Publisher publisher, Language language) {
         this.book_id = id;
         this.title = title;
         this.isbn13 = isbn13;
+        this.description = description;
         this.num_pages = num_pages;
         this.publication_date = publication_date;
         this.publisher = publisher;
@@ -63,6 +65,14 @@ public class BookDto {
 
     public void setIsbn13(String isbn13) {
         this.isbn13 = isbn13;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getNum_pages() {

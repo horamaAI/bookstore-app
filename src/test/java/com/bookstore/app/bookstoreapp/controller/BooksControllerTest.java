@@ -60,6 +60,7 @@ public class BooksControllerTest {
                 "\"title\": \"MY World's First Love\"," +
                 "\"isbn13\": \"8987059752\"," +
                 "\"num_pages\": 276," +
+                "\"description\": Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore" +
                 "\"publication_date\": \"1996-08-31T22:00:00.000+00:00\"," +
                 "\"publisher\": {" +
                 "\"publisher_id\": 1010," +
@@ -83,7 +84,7 @@ public class BooksControllerTest {
     @Test
     public void registerBookTest() throws Exception {
         BookDto bookDto = getBookDto();
-        Book book = new Book(bookDto.getTitle(), bookDto.getIsbn13(), bookDto.getNum_pages(), bookDto.getPublication_date(), bookDto.getPublisher(), bookDto.getLanguage());
+        Book book = new Book(bookDto.getTitle(), bookDto.getIsbn13(), bookDto.getDescription(), bookDto.getNum_pages(), bookDto.getPublication_date(), bookDto.getPublisher(), bookDto.getLanguage());
 
         when(bookService.registerBook(any(Book.class))).thenReturn(bookDto);
         when(bookService.bookHasValidIsbn13(book.getIsbn13())).thenReturn(true);
@@ -100,7 +101,6 @@ public class BooksControllerTest {
         BookDto bookDto = getBookDto();
         String buffer = getBookDto().getIsbn13();
         bookDto.setIsbn13("8917039152"); // 11 chars
-
         StringWriter writer = new StringWriter();
 
 //        MvcResult res = mockMvc.perform(post("/api/v1/books/register").contentType(MediaType.APPLICATION_JSON)
@@ -132,6 +132,7 @@ public class BooksControllerTest {
         BookDto bookDto = new BookDto() {{
             setTitle("MY World's First Love");
             setIsbn13("8917039152");
+            setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
             setNum_pages(430L);
             setPublication_date(Date.valueOf(LocalDate.now().minusYears(11)));
             setPublisher(testPublisher);

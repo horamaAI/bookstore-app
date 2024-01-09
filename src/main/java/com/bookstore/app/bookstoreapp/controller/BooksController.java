@@ -58,7 +58,7 @@ public class BooksController {
             return ResponseEntity.badRequest().body(badRequestResponse);
         }
 
-        Book book = new Book(bookDto.getTitle(), bookDto.getIsbn13(), bookDto.getNum_pages(), bookDto.getPublication_date(), bookDto.getPublisher(), bookDto.getLanguage());
+        Book book = new Book(bookDto.getTitle(), bookDto.getIsbn13(), bookDto.getDescription(), bookDto.getNum_pages(), bookDto.getPublication_date(), bookDto.getPublisher(), bookDto.getLanguage());
 
         BookDto savedBookDto = bookService.registerBook(book);
         logger.info("Registered book titled: {}", bookDto.getTitle());

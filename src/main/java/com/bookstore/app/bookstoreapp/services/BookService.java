@@ -72,8 +72,9 @@ public class BookService {
     }
 
     public boolean bookHasValidIsbn13(String isbn13) {
-        System.out.println("check valid isbn :" + isbn13.matches("(\\d{10}|\\d{13})"));
-        return false;
+//        System.out.println("check valid isbn :" + isbn13.matches("(\\d{10}|\\d{13})"));
+        return isbn13.matches("(\\d{10}|\\d{13})");
+//        return false;
 //        return isbn13.matches("[0-9]{10,13}");
     }
 }
