@@ -44,9 +44,7 @@ public class BooksController {
     @ResponseStatus(HttpStatus.CREATED) // return 201
     public ResponseEntity<?> registerBook(@Valid @RequestBody final BookDto bookDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errorsLog = bindingResult.getAllErrors()
-                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
+            List<String> errorsLog = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
             BadRequestException badRequestResponse = new BadRequestException(String.valueOf(errorsLog), HttpStatus.BAD_REQUEST);
             logger.warn("Bad request: failed to register book: '{}'", bookDto.getTitle(), badRequestResponse);
             return ResponseEntity.badRequest().body(badRequestResponse);

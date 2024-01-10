@@ -2,15 +2,14 @@ package com.bookstore.app.bookstoreapp.controller;
 
 
 import com.bookstore.app.bookstoreapp.dto.BookDto;
-import com.bookstore.app.bookstoreapp.exceptions.BadRequestException;
 import com.bookstore.app.bookstoreapp.models.Book;
 import com.bookstore.app.bookstoreapp.models.Language;
 import com.bookstore.app.bookstoreapp.models.Publisher;
 import com.bookstore.app.bookstoreapp.repositories.BookRepository;
 import com.bookstore.app.bookstoreapp.services.BookService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,32 +18,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.StringWriter;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @DisplayName("Test books controller")
 @AutoConfigureMockMvc
 public class BooksControllerTest {
+    public static final String MY_WORLD_S_FIRST_LOVE = "Me World's First Love";
+    public static final String BAD_ISBN = "8917039152";
     @Autowired
     private MockMvc mockMvc;
 
@@ -75,6 +69,7 @@ public class BooksControllerTest {
         List<BookDto> booksDto = jsonMapper.readValue(jsonInputList, new TypeReference<List<BookDto>>() {});
 
         when(bookService.getAllBooks()).thenReturn(booksDto);
+
         mockMvc.perform(get("/api/v1/books").contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(booksDto))).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -91,7 +86,7 @@ public class BooksControllerTest {
 
         mockMvc.perform(post("/api/v1/books/register").contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(bookDto))).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title", is("MY World's First Love")))
+                .andExpect(jsonPath("$.title", is(MY_WORLD_S_FIRST_LOVE)))
                 .andExpect(jsonPath("$.isbn13", is("8917039152")));
 
     }
@@ -100,7 +95,7 @@ public class BooksControllerTest {
     public void registerInvalidInputBookTest() throws Exception {
         BookDto bookDto = getBookDto();
         String buffer = getBookDto().getIsbn13();
-        bookDto.setIsbn13("8917039152"); // 11 chars
+        bookDto.setIsbn13(BAD_ISBN); // 11 chars
         StringWriter writer = new StringWriter();
 
 //        MvcResult res = mockMvc.perform(post("/api/v1/books/register").contentType(MediaType.APPLICATION_JSON)
@@ -129,8 +124,8 @@ public class BooksControllerTest {
 
         Language testLanguage = new Language("en-US", "United States English");
 
-        BookDto bookDto = new BookDto() {{
-            setTitle("MY World's First Love");
+        return new BookDto() {{
+            setTitle(MY_WORLD_S_FIRST_LOVE);
             setIsbn13("8917039152");
             setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
             setNum_pages(430L);
@@ -138,7 +133,6 @@ public class BooksControllerTest {
             setPublisher(testPublisher);
             setLanguage(testLanguage);
         }};
-        return bookDto;
     }
 
     public static String asJsonString(final Object obj) {
@@ -146,9 +140,8 @@ public class BooksControllerTest {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.findAndRegisterModules();
             return objectMapper.writeValueAsString(obj);
-        }
-        catch (Exception exc) {
-            throw new RuntimeException(exc);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

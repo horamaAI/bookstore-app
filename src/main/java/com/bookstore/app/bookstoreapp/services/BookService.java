@@ -46,10 +46,10 @@ public class BookService {
         System.out.println("checking value of publisher: " + book.getPublisher().toString());
         Optional<Publisher> existPublisher = publisherRepository.findById(book.getPublisher().getPublisher_id());
         Optional<Language> existLanguage = languageRepository.findById(book.getLanguage().getLanguage_id());
-        if (!existLanguage.isEmpty())
-            book.setLanguage(existLanguage.get());
-        if (!existPublisher.isEmpty())
-            book.setPublisher(existPublisher.get());
+
+        existLanguage.ifPresent(book::setLanguage);
+        existPublisher.ifPresent(book::setPublisher);
+
         Book savedBook = bookRepository.saveAndFlush(book);
 //        Book savedBook = bookRepository.save(book);
         return modelMapper.map(savedBook, BookDto.class);
@@ -66,8 +66,8 @@ public class BookService {
     public Book updateBook(Long id, Book book) {
         Book existingBook = this.getBookById(id);
         BeanUtils.copyProperties(book, existingBook, "book_id");// 3rd argument is to ignore property "session_id" when copying, otherwise id will be updated with null
-        System.out.println("check update retrieved: " + existingBook.toString());
-        System.out.println("check update former: " + book.toString());
+        System.out.println("check update retrieved: " + existingBook);
+        System.out.println("check update former: " + book);
         return bookRepository.saveAndFlush(existingBook);
     }
 

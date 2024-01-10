@@ -12,7 +12,7 @@ public class CustomException extends RuntimeException {
 
     public CustomException(String errorMessage) {
         super(errorMessage);
-        this.errors = Collections.singletonList(errorMessage);
+        this.errors = List.of(errorMessage);
         this.status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 

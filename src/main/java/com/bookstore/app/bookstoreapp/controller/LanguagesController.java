@@ -21,9 +21,7 @@ public class LanguagesController {
     public List<Language> languageList() {
 //        return languageService.getAllLanguages();
         List<Language> languages = languageService.getAllLanguages();
-        languages.forEach(
-                language -> System.out.println(language)
-        );
+        languages.forEach(language -> System.out.println(language));
         return languages;
     }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -113,10 +114,10 @@ public class Book {
 
     @Override
     public String toString() {
-        return new StringBuilder().append(getBook_id())
-                .append(", ").append(getTitle())
-                .append(", ").append(getIsbn13())
-                .append(", ").append(getNum_pages()).toString();
+        return getBook_id() +
+                ", " + getTitle() +
+                ", " + getIsbn13() +
+                ", " + getNum_pages();
     }
 
 }
